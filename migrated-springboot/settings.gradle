@@ -1,0 +1,15 @@
+rootProject.name = 'online-boutique'
+
+// Include all modules
+include 'common'
+include 'frontend'
+include 'cart-service'
+include 'product-catalog-service'
+include 'currency-service'
+include 'payment-service'
+include 'shipping-service'
+include 'email-service'
+include 'checkout-service'
+include 'recommendation-service'
+include 'ad-service'
+include 'migrations'

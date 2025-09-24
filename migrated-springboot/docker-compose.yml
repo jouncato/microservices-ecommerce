@@ -1,0 +1,157 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: onlineboutique-postgres
+    environment:
+      POSTGRES_DB: onlineboutique
+      POSTGRES_USER: onlineboutique
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onlineboutique -d onlineboutique"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - onlineboutique-network
+
+  # Product Catalog Service
+  product-catalog-service:
+    build:
+      context: .
+      dockerfile: product-catalog-service/Dockerfile
+    container_name: onlineboutique-product-catalog
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_USERNAME: onlineboutique
+      DB_PASSWORD: password
+      DATABASE_URL: jdbc:postgresql://postgres:5432/onlineboutique
+    ports:
+      - "3550:3550"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3550/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - onlineboutique-network
+
+  # Currency Service
+  currency-service:
+    build:
+      context: .
+      dockerfile: currency-service/Dockerfile
+    container_name: onlineboutique-currency
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_USERNAME: onlineboutique
+      DB_PASSWORD: password
+      DATABASE_URL: jdbc:postgresql://postgres:5432/onlineboutique
+    ports:
+      - "3551:3551"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3551/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - onlineboutique-network
+
+  # Cart Service
+  cart-service:
+    build:
+      context: .
+      dockerfile: cart-service/Dockerfile
+    container_name: onlineboutique-cart
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_USERNAME: onlineboutique
+      DB_PASSWORD: password
+      DATABASE_URL: jdbc:postgresql://postgres:5432/onlineboutique
+    ports:
+      - "3552:3552"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3552/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - onlineboutique-network
+
+  # Checkout Service
+  checkout-service:
+    build:
+      context: .
+      dockerfile: checkout-service/Dockerfile
+    container_name: onlineboutique-checkout
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      CART_SERVICE_URL: http://cart-service:3552
+      PRODUCT_CATALOG_SERVICE_URL: http://product-catalog-service:3550
+      CURRENCY_SERVICE_URL: http://currency-service:3551
+      PAYMENT_SERVICE_URL: http://payment-service:3554
+      SHIPPING_SERVICE_URL: http://shipping-service:3555
+      EMAIL_SERVICE_URL: http://email-service:3556
+    ports:
+      - "3553:3553"
+    depends_on:
+      - product-catalog-service
+      - currency-service
+      - cart-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3553/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - onlineboutique-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: onlineboutique-frontend
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      PRODUCT_CATALOG_SERVICE_URL: http://product-catalog-service:3550
+      CURRENCY_SERVICE_URL: http://currency-service:3551
+      CART_SERVICE_URL: http://cart-service:3552
+      CHECKOUT_SERVICE_URL: http://checkout-service:3553
+    ports:
+      - "8080:8080"
+    depends_on:
+      - product-catalog-service
+      - currency-service
+      - cart-service
+      - checkout-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - onlineboutique-network
+
+volumes:
+  postgres_data:
+
+networks:
+  onlineboutique-network:
+    driver: bridge

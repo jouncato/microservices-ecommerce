@@ -1,0 +1,66 @@
+// Migrations module build.gradle
+// Database migrations using Flyway
+
+apply plugin: 'org.flywaydb.flyway'
+
+dependencies {
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+}
+
+// Flyway configuration
+flyway {
+    url = project.hasProperty('flyway.url') ? project.property('flyway.url') : 'jdbc:postgresql://localhost:5432/onlineboutique'
+    user = project.hasProperty('flyway.user') ? project.property('flyway.user') : 'onlineboutique'
+    password = project.hasProperty('flyway.password') ? project.property('flyway.password') : 'password'
+    locations = ['filesystem:src/main/resources/db/migration']
+}
+
+// Disable bootJar for migrations module
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+// Custom tasks for different environments
+task flywayMigrateDev {
+    group = 'flyway'
+    description = 'Run Flyway migrations for development environment'
+    doLast {
+        flyway {
+            url = 'jdbc:postgresql://localhost:5432/onlineboutique'
+            user = 'onlineboutique'
+            password = 'password'
+        }
+        flywayMigrate.execute()
+    }
+}
+
+task flywayMigrateTest {
+    group = 'flyway'
+    description = 'Run Flyway migrations for test environment'
+    doLast {
+        flyway {
+            url = 'jdbc:postgresql://localhost:5432/onlineboutique_test'
+            user = 'onlineboutique'
+            password = 'password'
+        }
+        flywayMigrate.execute()
+    }
+}
+
+task flywayMigrateProd {
+    group = 'flyway'
+    description = 'Run Flyway migrations for production environment'
+    doLast {
+        flyway {
+            url = project.property('DATABASE_URL') ?: System.getenv('DATABASE_URL')
+            user = project.property('DB_USERNAME') ?: System.getenv('DB_USERNAME')
+            password = project.property('DB_PASSWORD') ?: System.getenv('DB_PASSWORD')
+        }
+        flywayMigrate.execute()
+    }
+}

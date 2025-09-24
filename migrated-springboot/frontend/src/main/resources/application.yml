@@ -1,0 +1,61 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: frontend-service
+  
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+  
+  webflux:
+    base-path: /
+
+# Service URLs
+services:
+  product-catalog:
+    url: ${PRODUCT_CATALOG_SERVICE_URL:http://localhost:3550}
+  currency:
+    url: ${CURRENCY_SERVICE_URL:http://localhost:3551}
+  cart:
+    url: ${CART_SERVICE_URL:http://localhost:3552}
+  checkout:
+    url: ${CHECKOUT_SERVICE_URL:http://localhost:3553}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.onlineboutique.frontend: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  
+logging:
+  level:
+    com.onlineboutique.frontend: INFO
+    org.springframework.web: WARN
+  file:
+    name: /var/log/frontend-service.log

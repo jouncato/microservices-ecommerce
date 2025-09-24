@@ -1,0 +1,21 @@
+// Common module build.gradle
+// This module contains shared models and utilities
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'io.micrometer:micrometer-core'
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+// Disable bootJar for common module as it's a library
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
+}

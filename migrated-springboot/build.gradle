@@ -1,0 +1,178 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0' apply false
+    id 'io.spring.dependency-management' version '1.1.4' apply false
+    id 'org.flywaydb.flyway' version '10.8.1' apply false
+}
+
+// Apply plugins to all subprojects
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.onlineboutique'
+    version = '1.0.0-SNAPSHOT'
+    
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.0"
+        }
+        
+        dependencies {
+            // Database
+            dependency 'org.postgresql:postgresql:42.7.1'
+            dependency 'org.flywaydb:flyway-core:10.8.1'
+            
+            // Observability
+            dependency 'io.micrometer:micrometer-core:1.12.0'
+            dependency 'io.opentelemetry:opentelemetry-api:1.32.0'
+            
+            // Testing
+            dependency 'org.junit.jupiter:junit-jupiter:5.10.1'
+            dependency 'org.mockito:mockito-core:5.8.0'
+            dependency 'org.testcontainers:testcontainers:1.19.3'
+            
+            // Utilities
+            dependency 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+            dependency 'jakarta.validation:jakarta.validation-api:3.0.2'
+        }
+    }
+
+    dependencies {
+        // Common dependencies for all modules
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'com.fasterxml.jackson.core:jackson-databind'
+        implementation 'io.micrometer:micrometer-core'
+        
+        // Testing dependencies
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testImplementation 'org.mockito:mockito-core'
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+        }
+    }
+
+    // Configure Spring Boot plugin
+    springBoot {
+        buildInfo()
+    }
+
+    // Configure bootJar task
+    bootJar {
+        enabled = true
+        archiveFileName = "${project.name}-${project.version}.jar"
+    }
+
+    // Configure jar task
+    jar {
+        enabled = true
+        archiveClassifier = ''
+    }
+}
+
+// Configure common module specifically
+project(':common') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'com.fasterxml.jackson.core:jackson-databind'
+        implementation 'io.micrometer:micrometer-core'
+    }
+}
+
+// Configure service modules
+configure(subprojects.findAll { it.name.endsWith('-service') || it.name == 'frontend' }) {
+    dependencies {
+        implementation project(':common')
+        
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        
+        implementation 'org.postgresql:postgresql'
+        implementation 'org.flywaydb:flyway-core'
+        
+        implementation 'io.micrometer:micrometer-registry-prometheus'
+        
+        testImplementation 'org.testcontainers:postgresql'
+    }
+}
+
+// Configure frontend module specifically
+project(':frontend') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    }
+}
+
+// Configure migrations module
+project(':migrations') {
+    apply plugin: 'org.flywaydb.flyway'
+    
+    dependencies {
+        implementation 'org.postgresql:postgresql'
+        implementation 'org.flywaydb:flyway-core'
+    }
+    
+    flyway {
+        url = project.hasProperty('flyway.url') ? project.property('flyway.url') : 'jdbc:postgresql://localhost:5432/onlineboutique'
+        user = project.hasProperty('flyway.user') ? project.property('flyway.user') : 'onlineboutique'
+        password = project.hasProperty('flyway.password') ? project.property('flyway.password') : 'password'
+        locations = ['filesystem:src/main/resources/db/migration']
+    }
+    
+    bootJar {
+        enabled = false
+    }
+    
+    jar {
+        enabled = true
+    }
+}
+
+// Global tasks
+task buildAll {
+    dependsOn subprojects.build
+    description = 'Build all modules'
+}
+
+task testAll {
+    dependsOn subprojects.test
+    description = 'Run tests for all modules'
+}
+
+task cleanAll {
+    dependsOn subprojects.clean
+    description = 'Clean all modules'
+}
+
+// Gradle wrapper configuration
+wrapper {
+    gradleVersion = '8.5'
+    distributionType = Wrapper.DistributionType.ALL
+}

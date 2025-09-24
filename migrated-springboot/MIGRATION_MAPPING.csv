@@ -1,0 +1,114 @@
+# Build System Migration
+migrated-springboot/pom.xml,migrated-springboot/build.gradle,Root build configuration,BUILD,COMPLETADO
+migrated-springboot/settings.gradle,migrated-springboot/settings.gradle,Gradle project settings,BUILD,COMPLETADO
+migrated-springboot/gradle.properties,migrated-springboot/gradle.properties,Gradle properties,BUILD,COMPLETADO
+migrated-springboot/gradle/wrapper/,migrated-springboot/gradle/wrapper/,Gradle wrapper,BUILD,COMPLETADO
+migrated-springboot/common/pom.xml,migrated-springboot/common/build.gradle,Common module build,BUILD,COMPLETADO
+migrated-springboot/frontend/pom.xml,migrated-springboot/frontend/build.gradle,Frontend module build,BUILD,COMPLETADO
+migrated-springboot/product-catalog-service/pom.xml,migrated-springboot/product-catalog-service/build.gradle,Product catalog build,BUILD,COMPLETADO
+migrated-springboot/currency-service/pom.xml,migrated-springboot/currency-service/build.gradle,Currency service build,BUILD,COMPLETADO
+migrated-springboot/cart-service/pom.xml,migrated-springboot/cart-service/build.gradle,Cart service build,BUILD,COMPLETADO
+migrated-springboot/checkout-service/pom.xml,migrated-springboot/checkout-service/build.gradle,Checkout service build,BUILD,COMPLETADO
+migrated-springboot/migrations/pom.xml,migrated-springboot/migrations/build.gradle,Migrations module build,BUILD,COMPLETADO
+
+# Scripts Migration
+migrated-springboot/build.sh,migrated-springboot/build.sh,Build script updated for Gradle,BUILD,COMPLETADO
+migrated-springboot/build.bat,migrated-springboot/build.bat,Build script updated for Gradle,BUILD,COMPLETADO
+migrated-springboot/test.sh,migrated-springboot/test.sh,Test script updated for Gradle,BUILD,COMPLETADO
+migrated-springboot/test.bat,migrated-springboot/test.bat,Test script updated for Gradle,BUILD,COMPLETADO
+
+# CI/CD Migration
+migrated-springboot/.github/workflows/ci-cd.yml,migrated-springboot/.github/workflows/ci-cd.yml,GitHub Actions updated for Gradle,BUILD,COMPLETADO
+
+# Documentation Migration
+migrated-springboot/README.md,migrated-springboot/README.md,README updated for Gradle,DOCS,COMPLETADO
+migrated-springboot/IMPLEMENTATION_MANUAL.md,migrated-springboot/IMPLEMENTATION_MANUAL.md,Implementation manual updated for Gradle,DOCS,COMPLETADO
+
+
+# Frontend Service Migration
+src/frontend/main.go,migrated-springboot/frontend/src/main/java/com/onlineboutique/frontend/FrontendApplication.java,Clase principal Spring Boot,frontend,COMPLETADO
+src/frontend/handlers.go,migrated-springboot/frontend/src/main/java/com/onlineboutique/frontend/controller/FrontendController.java,Controladores REST,frontend,COMPLETADO
+src/frontend/rpc.go,migrated-springboot/frontend/src/main/java/com/onlineboutique/frontend/client/ServiceClients.java,Clientes HTTP/REST,frontend,COMPLETADO
+src/frontend/middleware.go,migrated-springboot/frontend/src/main/java/com/onlineboutique/frontend/config/WebClientConfig.java,Configuración Spring,frontend,COMPLETADO
+src/frontend/money/money.go,migrated-springboot/common/src/main/java/com/onlineboutique/common/model/Money.java,Modelo compartido,common,COMPLETADO
+src/frontend/validator/validator.go,migrated-springboot/frontend/src/main/java/com/onlineboutique/frontend/validation/,Validaciones Spring,frontend,PENDIENTE
+src/frontend/templates/*.html,migrated-springboot/frontend/src/main/resources/templates/home.html,Templates Thymeleaf,frontend,PARCIAL
+
+# Cart Service Migration
+src/cartservice/src/Program.cs,migrated-springboot/cart-service/src/main/java/com/onlineboutique/cart/CartApplication.java,Clase principal Spring Boot,cart-service,COMPLETADO
+src/cartservice/src/Startup.cs,migrated-springboot/cart-service/src/main/java/com/onlineboutique/cart/config/,Configuración Spring,cart-service,PENDIENTE
+src/cartservice/src/services/CartService.cs,migrated-springboot/cart-service/src/main/java/com/onlineboutique/cart/service/CartService.java,Servicio de negocio,cart-service,COMPLETADO
+src/cartservice/src/cartstore/ICartStore.cs,migrated-springboot/cart-service/src/main/java/com/onlineboutique/cart/repository/CartItemRepository.java,Repositorio JPA,cart-service,COMPLETADO
+src/cartservice/src/cartstore/RedisCartStore.cs,migrated-springboot/cart-service/src/main/java/com/onlineboutique/cart/entity/CartItemEntity.java,Entidad JPA,cart-service,COMPLETADO
+src/cartservice/tests/CartServiceTests.cs,migrated-springboot/cart-service/src/test/java/com/onlineboutique/cart/service/CartServiceTest.java,Pruebas unitarias,cart-service,COMPLETADO
+
+# Product Catalog Service Migration
+src/productcatalogservice/server.go,migrated-springboot/product-catalog-service/src/main/java/com/onlineboutique/catalog/CatalogApplication.java,Clase principal Spring Boot,product-catalog-service,COMPLETADO
+src/productcatalogservice/product_catalog.go,migrated-springboot/product-catalog-service/src/main/java/com/onlineboutique/catalog/service/ProductService.java,Servicio de negocio,product-catalog-service,COMPLETADO
+src/productcatalogservice/catalog_loader.go,migrated-springboot/product-catalog-service/src/main/java/com/onlineboutique/catalog/config/DataLoader.java,Carga de datos,product-catalog-service,PENDIENTE
+src/productcatalogservice/products.json,migrated-springboot/migrations/V2__seed_products.sql,Datos de productos,migrations,COMPLETADO
+src/productcatalogservice/product_catalog_test.go,migrated-springboot/product-catalog-service/src/test/java/com/onlineboutique/catalog/service/ProductServiceTest.java,Pruebas unitarias,product-catalog-service,COMPLETADO
+
+# Currency Service Migration
+src/currencyservice/server.js,migrated-springboot/currency-service/src/main/java/com/onlineboutique/currency/CurrencyApplication.java,Clase principal Spring Boot,currency-service,COMPLETADO
+src/currencyservice/client.js,migrated-springboot/currency-service/src/test/java/com/onlineboutique/currency/,Cliente de prueba,currency-service,PENDIENTE
+src/currencyservice/data/currency_conversion.json,migrated-springboot/migrations/V3__seed_currencies.sql,Datos de monedas,migrations,COMPLETADO
+src/currencyservice/package.json,migrated-springboot/currency-service/pom.xml,Dependencias Maven,currency-service,COMPLETADO
+
+# Checkout Service Migration
+src/checkoutservice/main.go,migrated-springboot/checkout-service/src/main/java/com/onlineboutique/checkout/CheckoutApplication.java,Clase principal Spring Boot,checkout-service,COMPLETADO
+src/checkoutservice/money/money.go,migrated-springboot/common/src/main/java/com/onlineboutique/common/model/Money.java,Modelo compartido,common,COMPLETADO
+src/checkoutservice/money/money_test.go,migrated-springboot/common/src/test/java/com/onlineboutique/common/model/MoneyTest.java,Pruebas de modelo,common,PENDIENTE
+
+# Payment Service Migration (Pendiente)
+src/paymentservice/server.js,migrated-springboot/payment-service/src/main/java/com/onlineboutique/payment/PaymentApplication.java,Clase principal Spring Boot,payment-service,PENDIENTE
+src/paymentservice/charge.js,migrated-springboot/payment-service/src/main/java/com/onlineboutique/payment/service/PaymentService.java,Servicio de negocio,payment-service,PENDIENTE
+src/paymentservice/package.json,migrated-springboot/payment-service/pom.xml,Dependencias Maven,payment-service,PENDIENTE
+
+# Shipping Service Migration (Pendiente)
+src/shippingservice/main.go,migrated-springboot/shipping-service/src/main/java/com/onlineboutique/shipping/ShippingApplication.java,Clase principal Spring Boot,shipping-service,PENDIENTE
+src/shippingservice/quote.go,migrated-springboot/shipping-service/src/main/java/com/onlineboutique/shipping/service/ShippingService.java,Servicio de negocio,shipping-service,PENDIENTE
+src/shippingservice/tracker.go,migrated-springboot/shipping-service/src/main/java/com/onlineboutique/shipping/util/TrackingUtil.java,Utilidades,shipping-service,PENDIENTE
+
+# Email Service Migration (Pendiente)
+src/emailservice/email_server.py,migrated-springboot/email-service/src/main/java/com/onlineboutique/email/EmailApplication.java,Clase principal Spring Boot,email-service,PENDIENTE
+src/emailservice/templates/confirmation.html,migrated-springboot/email-service/src/main/resources/templates/confirmation.html,Template Thymeleaf,email-service,PENDIENTE
+src/emailservice/requirements.txt,migrated-springboot/email-service/pom.xml,Dependencias Maven,email-service,PENDIENTE
+
+# Recommendation Service Migration (Pendiente)
+src/recommendationservice/recommendation_server.py,migrated-springboot/recommendation-service/src/main/java/com/onlineboutique/recommendation/RecommendationApplication.java,Clase principal Spring Boot,recommendation-service,PENDIENTE
+src/recommendationservice/client.py,migrated-springboot/recommendation-service/src/test/java/com/onlineboutique/recommendation/,Cliente de prueba,recommendation-service,PENDIENTE
+
+# Ad Service Migration (Pendiente)
+src/adservice/src/main/java/hipstershop/AdService.java,migrated-springboot/ad-service/src/main/java/com/onlineboutique/ad/AdApplication.java,Clase principal Spring Boot,ad-service,PENDIENTE
+src/adservice/build.gradle,migrated-springboot/ad-service/pom.xml,Dependencias Maven,ad-service,PENDIENTE
+
+# Database Migration
+Redis Cart Storage,migrated-springboot/migrations/V1__init_schema.sql,Esquema PostgreSQL,migrations,COMPLETADO
+JSON Products,migrated-springboot/migrations/V2__seed_products.sql,Datos de productos,migrations,COMPLETADO
+JSON Currency Rates,migrated-springboot/migrations/V3__seed_currencies.sql,Datos de monedas,migrations,COMPLETADO
+Ad Data,migrated-springboot/migrations/V4__seed_ads.sql,Datos de anuncios,migrations,COMPLETADO
+
+# Configuration Migration
+src/frontend/static/,migrated-springboot/frontend/src/main/resources/static/,Assets estáticos,frontend,PENDIENTE
+src/emailservice/templates/,migrated-springboot/email-service/src/main/resources/templates/,Templates HTML,email-service,PENDIENTE
+
+# Docker Migration
+Original Dockerfiles,migrated-springboot/*/Dockerfile,Dockerfiles Alpine,containerization,COMPLETADO
+docker-compose.yml,migrated-springboot/docker-compose.yml,Compose local,containerization,COMPLETADO
+
+# Kubernetes Migration
+kubernetes-manifests/,migrated-springboot/k8s/,Manifiestos K8s,deployment,COMPLETADO
+helm-chart/,migrated-springboot/helm-chart/,Helm charts,deployment,COMPLETADO
+
+# CI/CD Migration
+Original CI/CD,migrated-springboot/.github/workflows/ci-cd.yml,Pipeline GitHub Actions,ci-cd,COMPLETADO
+
+# Testing Migration
+Original Tests,migrated-springboot/*/src/test/java/,Pruebas JUnit 5,testing,COMPLETADO
+Integration Tests,migrated-springboot/*/src/test/java/*IntegrationTest.java,Pruebas Testcontainers,testing,COMPLETADO
+Contract Tests,migrated-springboot/*/src/test/java/*ContractTest.java,Pruebas de contrato,testing,COMPLETADO
+
+# Documentation Migration
+README.md,migrated-springboot/README.md,Documentación principal,documentation,COMPLETADO
+docs/,migrated-springboot/IMPLEMENTATION_MANUAL.md,Manual de implementación,documentation,COMPLETADO

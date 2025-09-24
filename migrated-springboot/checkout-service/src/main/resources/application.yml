@@ -1,0 +1,60 @@
+server:
+  port: 3553
+  servlet:
+    context-path: /checkout
+
+spring:
+  application:
+    name: checkout-service
+  
+  webflux:
+    base-path: /checkout
+
+# Service URLs
+services:
+  cart:
+    url: ${CART_SERVICE_URL:http://localhost:3552}
+  product-catalog:
+    url: ${PRODUCT_CATALOG_SERVICE_URL:http://localhost:3550}
+  currency:
+    url: ${CURRENCY_SERVICE_URL:http://localhost:3551}
+  payment:
+    url: ${PAYMENT_SERVICE_URL:http://localhost:3554}
+  shipping:
+    url: ${SHIPPING_SERVICE_URL:http://localhost:3555}
+  email:
+    url: ${EMAIL_SERVICE_URL:http://localhost:3556}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.onlineboutique.checkout: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  
+logging:
+  level:
+    com.onlineboutique.checkout: INFO
+    org.springframework.web: WARN
+  file:
+    name: /var/log/checkout-service.log

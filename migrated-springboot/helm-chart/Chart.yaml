@@ -1,0 +1,16 @@
+apiVersion: v2
+name: onlineboutique
+description: Online Boutique E-commerce Application
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - ecommerce
+  - microservices
+  - spring-boot
+home: https://github.com/GoogleCloudPlatform/microservices-demo
+sources:
+  - https://github.com/GoogleCloudPlatform/microservices-demo
+maintainers:
+  - name: Online Boutique Team
+    email: team@onlineboutique.com
